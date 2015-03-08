@@ -32,6 +32,7 @@ private:
 
 signals:
     void sendMessage(QString messageContent);
+    void newPrivateWindow(QObject* privateWindow);
 
 public slots:
     void MessageTextChanged();

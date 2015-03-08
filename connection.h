@@ -26,6 +26,8 @@ public slots:
     void checkUserList();
     void disconnected();
     void outgoingPublicMessage(QString messageContent);
+    void outgoingPrivateMessage(QString receiver, QString messageContent);
+    void newPrivateWindow(QObject* privateWindow);
 };
 
 #endif // CONNECTION_H
