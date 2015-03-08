@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="message_box">
+   <widget class="ChatTextBox" name="message_box">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -86,13 +86,6 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <zorder>message_box</zorder>
-   <zorder>send_button</zorder>
-   <zorder>user_list</zorder>
-   <zorder>label</zorder>
-   <zorder>chat_box</zorder>
-   <zorder>listWidget</zorder>
-   <zorder>tex_number_label</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -124,6 +117,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ChatTextBox</class>
+   <extends>QTextEdit</extends>
+   <header>chattextbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -1,6 +1,8 @@
 #include "connectwindow.h"
 #include "ui_connectwindow.h"
 #include <QMessageBox>
+#include "connection.h"
+#include "publicchat.h"
 
 ConnectWindow::ConnectWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,5 +35,18 @@ void ConnectWindow::ConnectToHost(){
         alert.setText("Please fill out all the field");
         alert.exec();
     }
-
+    else{
+        PublicChat* mainWindow = new PublicChat();
+        mainWindow->setUsername(name);
+        Connection* theConnection = new Connection(5, mainWindow);
+        if(!theConnection->connectToHost(IP, port, name)){
+            delete mainWindow;
+            delete theConnection;
+            QMessageBox alert;
+            alert.setText("ERROR: Cannot connect to server");
+            alert.exec();
+            return;
+        }
+        this->close();
+    }
 }

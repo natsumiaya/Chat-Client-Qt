@@ -11,11 +11,13 @@ class Connection : public QObject
 public:
     explicit Connection(int refreshRate = 5, QObject *parent = 0);
     ~Connection();
-    void connectToHost(QString IP, quint16 Port, QString Username);
+    bool connectToHost(QString IP, quint16 Port, QString Username);
 
 private:
     QTimer timer;
     QTcpSocket* socket;
+    bool isApplicationRunning;
+    QString username;
 
 signals:
 
@@ -23,6 +25,7 @@ public slots:
     void incomingMessage();
     void checkUserList();
     void disconnected();
+    void outgoingPublicMessage(QString messageContent);
 };
 
 #endif // CONNECTION_H

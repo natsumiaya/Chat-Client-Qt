@@ -10,6 +10,7 @@ PublicChat::PublicChat(int maxCharacterLength, QWidget *parent) :
     this->setFixedSize(this->width(), this->height());
 
     connect(ui->message_box, SIGNAL(textChanged()), this, SLOT(MessageTextChanged()));
+    connect(ui->message_box, SIGNAL(returnKeyPressed()), this, SLOT(checkMessage()));
     maxCharacterMessageLength = maxCharacterLength;
 }
 
@@ -29,4 +30,14 @@ void PublicChat::MessageTextChanged(){
     else{
         ui->tex_number_label->setText(QString::number(length) + "/" + QString::number(maxCharacterMessageLength));
     }
+}
+
+void PublicChat::checkMessage(){
+    QString message = ui->message_box->toPlainText();
+    emit sendMessage(message);
+
+}
+
+void PublicChat::setUsername(QString username){
+    this->username = username;
 }
