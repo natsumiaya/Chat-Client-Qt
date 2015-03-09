@@ -69,11 +69,33 @@ void Connection::incomingMessage(){
         else if(stringList.at(0) == "Mode: Private"){
             //Check private window
             //Create new window if necessary
+            QString username = stringList.at(1);
+            username.remove(0, 6);
+
+            PrivateChat* destination = nullptr;
+            for(PrivateChat* now : *(PublicWindow->getPrivateChatList())){
+                if(now->getReceiver() == username){
+                    destination = now;
+                    break;
+                }
+            }
             //Send message to the window
+            if(destination != nullptr){
+                destination->addMessage(stringList.at(2));
+            }
+            else{
+                destination = PublicWindow->addPrivateChat(username);
+                connect(destination, SIGNAL(sendMessage(QString,QString)), this, SLOT(outgoingPrivateMessage(QString,QString)));
+                destination->addMessage(stringList.at(2));
+            }
+
         }
         else if(stringList.at(0) == "Mode: List"){
-            //Contain user list in QList
+            //Contain user list in QStringList
             //Send the list to PublicChat
+            QStringList newList(stringList);
+            newList.removeFirst();
+            PublicWindow->updateUserList(newList);
         }
     }
 }
