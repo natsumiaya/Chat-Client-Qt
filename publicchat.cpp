@@ -68,6 +68,7 @@ void PublicChat::addMessage(QString username, QString messageContent){
 void PublicChat::addMessage(QString messageContent){
     ui->chat_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
     ui->chat_box->append(messageContent + "<br/>");
+
 }
 
 void PublicChat::createNewPrivateWindow(QListWidgetItem *item){
@@ -78,6 +79,22 @@ void PublicChat::createNewPrivateWindow(QListWidgetItem *item){
     emit newPrivateWindow((QObject*)newPrivateChat);
 }
 
-QList<QString>* PublicChat::getUserList(){
+QStringList *PublicChat::getUserList(){
     return &userList;
+}
+
+QList<PrivateChat*>* PublicChat::getPrivateChatList(){
+    return &privateList;
+}
+
+PrivateChat* PublicChat::addPrivateChat(QString username){
+    PrivateChat* newPrivateWindow = new PrivateChat(username);
+    privateList.append(newPrivateWindow);
+    newPrivateWindow->show();
+    return newPrivateWindow;
+}
+
+void PublicChat::updateUserList(QStringList userList){
+    ui->user_list->clear();
+    ui->user_list->addItems(userList);
 }

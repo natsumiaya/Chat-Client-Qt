@@ -18,17 +18,17 @@ public:
     ~PublicChat();
     void setUsername(QString username);
     void addMessage(QString username, QString messageContent);
-    void updateUserList(QList<QString> userList);
+    void updateUserList(QStringList userList);
     PrivateChat* addPrivateChat(QString username);
     QList<PrivateChat*>* getPrivateChatList();
-    QList<QString>* getUserList();
+    QStringList* getUserList();
 
 private:
     Ui::PublicChat *ui;
     int maxCharacterMessageLength;
     QString username;
     QList<PrivateChat*> privateList;
-    QList<QString> userList;
+    QStringList userList;
 
 private:
     void closeEvent(QCloseEvent* event);
