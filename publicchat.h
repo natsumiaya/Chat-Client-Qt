@@ -2,6 +2,7 @@
 #define PUBLICCHAT_H
 
 #include <QMainWindow>
+#include <QListWidgetItem>
 #include "privatechat.h"
 
 namespace Ui {
@@ -17,15 +18,18 @@ public:
     ~PublicChat();
     void setUsername(QString username);
     void addMessage(QString username, QString messageContent);
+    void addMessage(QString messageContent);
     void updateUserList(QList<QString> userList);
     PrivateChat* addPrivateChat(QString username);
     QList<PrivateChat*>* getPrivateChatList();
+    QList<QString>* getUserList();
 
 private:
     Ui::PublicChat *ui;
     int maxCharacterMessageLength;
     QString username;
     QList<PrivateChat*> privateList;
+    QList<QString> userList;
 
 private:
     void closeEvent(QCloseEvent* event);
@@ -38,6 +42,7 @@ public slots:
     void MessageTextChanged();
     void checkMessage();
     void PrivateWindowClosed(QObject* window);
+    void createNewPrivateWindow(QListWidgetItem* item);
 };
 
 #endif // PUBLICCHAT_H

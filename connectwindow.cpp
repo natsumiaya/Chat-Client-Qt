@@ -32,6 +32,7 @@ void ConnectWindow::ConnectToHost(){
 
     if(IP == "" || port == 0 || name == ""){
         QMessageBox alert;
+        alert.setWindowTitle("Error");
         alert.setText("Please fill out all the field");
         alert.exec();
     }
@@ -43,10 +44,12 @@ void ConnectWindow::ConnectToHost(){
             delete mainWindow;
             delete theConnection;
             QMessageBox alert;
-            alert.setText("ERROR: Cannot connect to server");
+            alert.setWindowTitle("Error");
+            alert.setText("ERROR: Cannot connect to server\nConnection timed out");
             alert.exec();
             return;
         }
+        mainWindow->show();
         this->close();
     }
 }

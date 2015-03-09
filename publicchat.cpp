@@ -1,5 +1,6 @@
 #include "publicchat.h"
 #include "ui_publicchat.h"
+#include <QCloseEvent>
 
 PublicChat::PublicChat(int maxCharacterLength, QWidget *parent) :
     QMainWindow(parent),
@@ -11,6 +12,8 @@ PublicChat::PublicChat(int maxCharacterLength, QWidget *parent) :
 
     connect(ui->message_box, SIGNAL(textChanged()), this, SLOT(MessageTextChanged()));
     connect(ui->message_box, SIGNAL(returnKeyPressed()), this, SLOT(checkMessage()));
+    connect(ui->send_button, SIGNAL(clicked()), this, SLOT(checkMessage()));
+    connect(ui->user_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(createNewPrivateWindow(QListWidgetItem*)));
     maxCharacterMessageLength = maxCharacterLength;
 }
 
@@ -34,10 +37,43 @@ void PublicChat::MessageTextChanged(){
 
 void PublicChat::checkMessage(){
     QString message = ui->message_box->toPlainText();
+    this->addMessage(message);
     emit sendMessage(message);
-
 }
 
 void PublicChat::setUsername(QString username){
     this->username = username;
+}
+
+void PublicChat::PrivateWindowClosed(QObject *window){
+    privateList.removeOne((PrivateChat*) window);
+}
+
+void PublicChat::closeEvent(QCloseEvent *event){
+
+    this->disconnect();
+    for(PrivateChat* privateWindow : privateList){
+        privateWindow->close();
+    }
+    event->accept();
+}
+
+
+void PublicChat::addMessage(QString username, QString messageContent){
+    //Add message to TextBrowser
+    ui->chat_box->append("<b><style= 'color:red'>" + username + "</style></b><br/>");
+    ui->chat_box->append(messageContent + "<br/>");
+}
+
+void PublicChat::addMessage(QString messageContent){
+    ui->chat_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
+    ui->chat_box->append(messageContent + "<br/>");
+}
+
+void PublicChat::createNewPrivateWindow(QListWidgetItem *item){
+    PrivateChat* newPrivateChat = new PrivateChat();
+    newPrivateChat->setReceiver(item->text());
+    newPrivateChat->show();
+    privateList.append(newPrivateChat);
+    emit newPrivateWindow((QObject*)newPrivateChat);
 }
