@@ -1,5 +1,6 @@
 #include "connection.h"
 #include "publicchat.h"
+#include "privatechat.h"
 #include <QMessageBox>
 
 Connection::Connection(int refreshRate, QObject *parent) : QObject(parent)
@@ -22,7 +23,7 @@ bool Connection::connectToHost(QString IP, quint16 Port, QString Username){
     if(socket->waitForConnected()){
         socket->write(Username.toUtf8() + "\r\n.\r\n");
         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-        PublicChat* thePublic = parent();
+        PublicChat* thePublic = (PublicChat*)parent();
         connect(thePublic, SIGNAL(sendMessage(QString)), this, SLOT(outgoingPublicMessage(QString)));
         isApplicationRunning = true;
         timer.start();
@@ -33,7 +34,8 @@ bool Connection::connectToHost(QString IP, quint16 Port, QString Username){
 
 void Connection::disconnected(){
     if(isApplicationRunning){
-        QMessageBox alert("Disconnected");
+        QMessageBox alert;
+        alert.setWindowTitle("Disconnected");
         alert.setText("You have been disconnected from server\nTrying to reconnect");
 
         alert.exec();
@@ -53,11 +55,16 @@ void Connection::outgoingPublicMessage(QString messageContent){
 void Connection::incomingMessage(){
     QByteArray data = socket->readAll();
     QString message(data);
+    PublicChat* PublicWindow = (PublicChat*)parent();
     for(const QString oneMessage : message.split("\r\n.\r\n")){
         if(oneMessage == NULL) continue;
         QStringList stringList = oneMessage.split("\r\n");
         if(stringList.at(0) == "Mode: Public"){
             //Send message to the window
+            //'User: '/
+            QString newString = stringList.at(1);
+            newString.remove(0, 6);
+            PublicWindow->addMessage(newString, stringList.at(2));
         }
         else if(stringList.at(0) == "Mode: Private"){
             //Check private window
@@ -83,4 +90,6 @@ void Connection::checkUserList(){
 
 void Connection::newPrivateWindow(QObject *privateWindow){
     //Add signal listener to the new window
+    PrivateChat* privateChat = (PrivateChat*)privateWindow;
+    connect(privateChat, SIGNAL(sendMessage(QString,QString)), this, SLOT(outgoingPrivateMessage(QString,QString)));
 }
