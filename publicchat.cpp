@@ -71,9 +71,13 @@ void PublicChat::addMessage(QString messageContent){
 }
 
 void PublicChat::createNewPrivateWindow(QListWidgetItem *item){
-    PrivateChat* newPrivateChat = new PrivateChat();
+    PrivateChat* newPrivateChat = new PrivateChat(this->username);
     newPrivateChat->setReceiver(item->text());
     newPrivateChat->show();
     privateList.append(newPrivateChat);
     emit newPrivateWindow((QObject*)newPrivateChat);
+}
+
+QList<QString>* PublicChat::getUserList(){
+    return &userList;
 }

@@ -13,12 +13,12 @@ class PrivateChat : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit PrivateChat(int intervalMsec = 5000, QWidget *parent = 0);
+    explicit PrivateChat(QString username, int intervalMsec = 5000, QWidget *parent = 0);
     ~PrivateChat();
     QString getReceiver();
     void setReceiver(QString messageReceiver);
     void setTimerIntrval(int msec);
-    void addMessage(QString messageContent);
+    void addMessage(QString sender, QString messageContent);
 
 signals:
     void sendMessage(QString messageReceiver, QString messageContent);
@@ -32,11 +32,12 @@ private:
     Ui::PrivateChat *ui;
     QString messageReceiver;
     QTimer timer;
-    QList<QString>* userList;
+    QString username;
 
 private:
     void showEvent(QShowEvent* event);
     void closeEvent(QCloseEvent* event);
+    void addMessage(QString messageContent);
 };
 
 #endif // PRIVATECHAT_H

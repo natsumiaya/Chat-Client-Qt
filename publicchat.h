@@ -18,7 +18,6 @@ public:
     ~PublicChat();
     void setUsername(QString username);
     void addMessage(QString username, QString messageContent);
-    void addMessage(QString messageContent);
     void updateUserList(QList<QString> userList);
     PrivateChat* addPrivateChat(QString username);
     QList<PrivateChat*>* getPrivateChatList();
@@ -33,6 +32,7 @@ private:
 
 private:
     void closeEvent(QCloseEvent* event);
+    void addMessage(QString messageContent);
 
 signals:
     void sendMessage(QString messageContent);
