@@ -14,7 +14,9 @@ PrivateChat::PrivateChat(QString username, int intervalMsec, QWidget *parent) :
     connect(ui->message_box, SIGNAL(returnKeyPressed()), this, SLOT(checkMessageText()));
     connect(ui->send_button, SIGNAL(clicked()), this, SLOT(checkMessageText()));
 
-    this->username = username;
+    this->username = ((PublicChat*)parent)->getUsername();
+    this->messageReceiver = username;
+    ui->messageReceiver->setText(username);
 }
 
 PrivateChat::~PrivateChat()
@@ -41,17 +43,18 @@ void PrivateChat::setReceiver(QString messageReceiver){
 void PrivateChat::checkMessageText(){
     QString message = ui->message_box->toPlainText();
     this->addUserMessage(message);
+    ui->message_box->clear();
     emit sendMessage(this->messageReceiver, message);
 }
 
 void PrivateChat::addUserMessage(QString messageContent){
-    ui->message_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
-    ui->message_box->append(messageContent + "<br/>");
+    ui->chat_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
+    ui->chat_box->append(messageContent + "<br/>");
 }
 
 void PrivateChat::addMessage(QString messageContent){
-    ui->message_box->append("<b><style= 'color:red'>" + this->messageReceiver + "</style></b><br/>");
-    ui->message_box->append(messageContent + "<br/>");
+    ui->chat_box->append("<b><style= 'color:red'>" + this->messageReceiver + "</style></b><br/>");
+    ui->chat_box->append(messageContent + "<br/>");
 }
 
 void PrivateChat::checkReceiverStatus(){

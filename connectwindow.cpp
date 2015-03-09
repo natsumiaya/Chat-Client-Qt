@@ -42,14 +42,17 @@ void ConnectWindow::ConnectToHost(){
         Connection* theConnection = new Connection(5, mainWindow);
         if(!theConnection->connectToHost(IP, port, name)){
             delete mainWindow;
-            delete theConnection;
+//            delete theConnection;
             QMessageBox alert;
             alert.setWindowTitle("Error");
             alert.setText("ERROR: Cannot connect to server\nConnection timed out");
             alert.exec();
-            return;
         }
-        mainWindow->show();
-        this->close();
+        else{
+            mainWindow->show();
+            theConnection->checkUserList();
+            connect(mainWindow, SIGNAL(newPrivateWindow(QObject*)), theConnection, SLOT(newPrivateWindow(QObject*)));
+            this->close();
+        }
     }
 }

@@ -2,6 +2,7 @@
 #include "publicchat.h"
 #include "privatechat.h"
 #include <QMessageBox>
+#include <QDebug>
 
 Connection::Connection(int refreshRate, QObject *parent) : QObject(parent)
 {
@@ -21,11 +22,11 @@ bool Connection::connectToHost(QString IP, quint16 Port, QString Username){
     connect(socket, SIGNAL(readyRead()), this, SLOT(incomingMessage()));
     socket->connectToHost(IP, Port);
     if(socket->waitForConnected()){
-        socket->write(Username.toUtf8() + "\r\n.\r\n");
         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
         PublicChat* thePublic = (PublicChat*)parent();
         connect(thePublic, SIGNAL(sendMessage(QString)), this, SLOT(outgoingPublicMessage(QString)));
         isApplicationRunning = true;
+        socket->write("Mode: Username\r\n" + Username.toUtf8() + "\r\n.\r\n");
         timer.start();
         return true;
     }

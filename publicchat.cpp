@@ -1,6 +1,8 @@
 #include "publicchat.h"
 #include "ui_publicchat.h"
 #include <QCloseEvent>
+#include <QColor>
+#include <QFont>
 
 PublicChat::PublicChat(int maxCharacterLength, QWidget *parent) :
     QMainWindow(parent),
@@ -38,6 +40,7 @@ void PublicChat::MessageTextChanged(){
 void PublicChat::checkMessage(){
     QString message = ui->message_box->toPlainText();
     this->addMessage(message);
+    ui->message_box->clear();
     emit sendMessage(message);
 }
 
@@ -61,21 +64,30 @@ void PublicChat::closeEvent(QCloseEvent *event){
 
 void PublicChat::addMessage(QString username, QString messageContent){
     //Add message to TextBrowser
-    ui->chat_box->append("<b><style= 'color:red'>" + username + "</style></b><br/>");
-    ui->chat_box->append(messageContent + "<br/>");
+    ui->chat_box->setTextColor(Qt::red);
+    ui->chat_box->setFontWeight(QFont::Bold);
+    ui->chat_box->append(username + " :");
+    ui->chat_box->setTextColor(Qt::black);
+    ui->chat_box->setFontWeight(QFont::Normal);
+    ui->chat_box->append(messageContent + "\n");
 }
 
 void PublicChat::addMessage(QString messageContent){
-    ui->chat_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
-    ui->chat_box->append(messageContent + "<br/>");
+    ui->chat_box->setTextColor(Qt::green);
+    ui->chat_box->setFontWeight(QFont::Bold);
+    ui->chat_box->append(this->username + " :");
+    ui->chat_box->setTextColor(Qt::black);
+    ui->chat_box->setFontWeight(QFont::Normal);
+    ui->chat_box->append(messageContent + "\n");
 
 }
 
 void PublicChat::createNewPrivateWindow(QListWidgetItem *item){
-    PrivateChat* newPrivateChat = new PrivateChat(this->username);
+    PrivateChat* newPrivateChat = new PrivateChat(this->username, 5000, this);
     newPrivateChat->setReceiver(item->text());
     newPrivateChat->show();
     privateList.append(newPrivateChat);
+    connect(newPrivateChat, SIGNAL(windowClosed(QObject*)), this, SLOT(PrivateWindowClosed(QObject*)));
     emit newPrivateWindow((QObject*)newPrivateChat);
 }
 
@@ -88,13 +100,19 @@ QList<PrivateChat*>* PublicChat::getPrivateChatList(){
 }
 
 PrivateChat* PublicChat::addPrivateChat(QString username){
-    PrivateChat* newPrivateWindow = new PrivateChat(username);
+    PrivateChat* newPrivateWindow = new PrivateChat(username, 5000, this);
+    connect(newPrivateWindow, SIGNAL(windowClosed(QObject*)), this, SLOT(PrivateWindowClosed(QObject*)));
     privateList.append(newPrivateWindow);
     newPrivateWindow->show();
     return newPrivateWindow;
 }
 
 void PublicChat::updateUserList(QStringList userList){
+    this->userList = userList;
     ui->user_list->clear();
     ui->user_list->addItems(userList);
+}
+
+QString PublicChat::getUsername(){
+    return this->username;
 }

@@ -22,6 +22,7 @@ public:
     PrivateChat* addPrivateChat(QString username);
     QList<PrivateChat*>* getPrivateChatList();
     QStringList* getUserList();
+    QString getUsername();
 
 private:
     Ui::PublicChat *ui;
