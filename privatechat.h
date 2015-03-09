@@ -18,7 +18,7 @@ public:
     QString getReceiver();
     void setReceiver(QString messageReceiver);
     void setTimerIntrval(int msec);
-    void addMessage(QString sender, QString messageContent);
+    void addMessage(QString messageContent);
 
 signals:
     void sendMessage(QString messageReceiver, QString messageContent);
@@ -37,7 +37,7 @@ private:
 private:
     void showEvent(QShowEvent* event);
     void closeEvent(QCloseEvent* event);
-    void addMessage(QString messageContent);
+    void addUserMessage(QString messageContent);
 };
 
 #endif // PRIVATECHAT_H

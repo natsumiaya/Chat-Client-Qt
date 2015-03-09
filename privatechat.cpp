@@ -40,26 +40,30 @@ void PrivateChat::setReceiver(QString messageReceiver){
 
 void PrivateChat::checkMessageText(){
     QString message = ui->message_box->toPlainText();
-    this->addMessage(message);
+    this->addUserMessage(message);
     emit sendMessage(this->messageReceiver, message);
 }
 
-void PrivateChat::addMessage(QString messageContent){
+void PrivateChat::addUserMessage(QString messageContent){
     ui->message_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
     ui->message_box->append(messageContent + "<br/>");
 }
 
-void PrivateChat::addMessage(QString sender, QString messageContent){
-    ui->message_box->append("<b><style= 'color:red'>" + sender + "</style></b><br/>");
+void PrivateChat::addMessage(QString messageContent){
+    ui->message_box->append("<b><style= 'color:red'>" + this->messageReceiver + "</style></b><br/>");
     ui->message_box->append(messageContent + "<br/>");
 }
 
 void PrivateChat::checkReceiverStatus(){
-    QList<QString>* userList = ((PublicChat*)parent())->getUserList();
+    QStringList* userList = ((PublicChat*)parent())->getUserList();
     if(userList->contains(messageReceiver)){
         ui->receiverStatus->setText("Online");
     }
     else{
         ui->receiverStatus->setText("Offline");
     }
+}
+
+QString PrivateChat::getReceiver(){
+    return messageReceiver;
 }
