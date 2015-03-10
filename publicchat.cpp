@@ -50,6 +50,11 @@ void PublicChat::setUsername(QString username){
 
 void PublicChat::PrivateWindowClosed(QObject *window){
 //    privateList.removeOne((PrivateChat*) window);
+    PrivateChat* theWindow = (PrivateChat*)window;
+    if(!userList.contains(theWindow->getReceiver())){
+        privateList.removeOne(theWindow);
+        delete theWindow;
+    }
 }
 
 void PublicChat::closeEvent(QCloseEvent *event){
