@@ -39,7 +39,7 @@ void ConnectWindow::ConnectToHost(){
     else{
         PublicChat* mainWindow = new PublicChat();
         mainWindow->setUsername(name);
-        Connection* theConnection = new Connection(5, mainWindow);
+        Connection* theConnection = new Connection(1000, mainWindow);
         if(!theConnection->connectToHost(IP, port, name)){
             delete mainWindow;
 //            delete theConnection;

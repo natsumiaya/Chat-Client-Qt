@@ -48,13 +48,23 @@ void PrivateChat::checkMessageText(){
 }
 
 void PrivateChat::addUserMessage(QString messageContent){
-    ui->chat_box->append("<b><style= 'color:green'>" + this->username + "</style></b><br/>");
-    ui->chat_box->append(messageContent + "<br/>");
+    ui->chat_box->setAlignment(Qt::AlignLeft);
+    ui->chat_box->setTextColor(Qt::green);
+    ui->chat_box->setFontWeight(QFont::Bold);
+    ui->chat_box->append(this->username + " :");
+    ui->chat_box->setTextColor(Qt::black);
+    ui->chat_box->setFontWeight(QFont::Normal);
+    ui->chat_box->append(messageContent + "\n");
 }
 
 void PrivateChat::addMessage(QString messageContent){
-    ui->chat_box->append("<b><style= 'color:red'>" + this->messageReceiver + "</style></b><br/>");
-    ui->chat_box->append(messageContent + "<br/>");
+    ui->chat_box->setAlignment(Qt::AlignRight);
+    ui->chat_box->setTextColor(Qt::red);
+    ui->chat_box->setFontWeight(QFont::Bold);
+    ui->chat_box->append(this->messageReceiver + " :");
+    ui->chat_box->setTextColor(Qt::black);
+    ui->chat_box->setFontWeight(QFont::Normal);
+    ui->chat_box->append(messageContent + "\n");
 }
 
 void PrivateChat::checkReceiverStatus(){

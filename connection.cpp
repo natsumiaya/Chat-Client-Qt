@@ -4,9 +4,9 @@
 #include <QMessageBox>
 #include <QDebug>
 
-Connection::Connection(int refreshRate, QObject *parent) : QObject(parent)
+Connection::Connection(int refreshRate_msec, QObject *parent) : QObject(parent)
 {
-    timer.setInterval(refreshRate * 1000);
+    timer.setInterval(refreshRate_msec);
     connect(&timer, SIGNAL(timeout()), this, SLOT(checkUserList()));
     isApplicationRunning = false;
 }

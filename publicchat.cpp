@@ -64,6 +64,7 @@ void PublicChat::closeEvent(QCloseEvent *event){
 
 void PublicChat::addMessage(QString username, QString messageContent){
     //Add message to TextBrowser
+    ui->chat_box->setAlignment(Qt::AlignRight);
     ui->chat_box->setTextColor(Qt::red);
     ui->chat_box->setFontWeight(QFont::Bold);
     ui->chat_box->append(username + " :");
@@ -73,6 +74,7 @@ void PublicChat::addMessage(QString username, QString messageContent){
 }
 
 void PublicChat::addMessage(QString messageContent){
+    ui->chat_box->setAlignment(Qt::AlignLeft);
     ui->chat_box->setTextColor(Qt::green);
     ui->chat_box->setFontWeight(QFont::Bold);
     ui->chat_box->append(this->username + " :");

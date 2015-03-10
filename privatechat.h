@@ -13,7 +13,7 @@ class PrivateChat : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit PrivateChat(QString username, int intervalMsec = 5000, QWidget *parent = 0);
+    explicit PrivateChat(QString username, int intervalMsec = 500, QWidget *parent = 0);
     ~PrivateChat();
     QString getReceiver();
     void setReceiver(QString messageReceiver);
