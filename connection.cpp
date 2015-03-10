@@ -18,6 +18,7 @@ Connection::~Connection()
 
 bool Connection::connectToHost(QString IP, quint16 Port, QString Username){
     socket = new QTcpSocket(this);
+    qDebug() << Username;
     this->username = Username;
     connect(socket, SIGNAL(readyRead()), this, SLOT(incomingMessage()));
     socket->connectToHost(IP, Port);
@@ -89,6 +90,8 @@ void Connection::incomingMessage(){
                 connect(destination, SIGNAL(sendMessage(QString,QString)), this, SLOT(outgoingPrivateMessage(QString,QString)));
                 destination->addMessage(stringList.at(2));
             }
+            destination->show();
+//            destination->activateWindow();
 
         }
         else if(stringList.at(0) == "Mode: List"){

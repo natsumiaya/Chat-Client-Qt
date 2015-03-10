@@ -49,7 +49,7 @@ void PublicChat::setUsername(QString username){
 }
 
 void PublicChat::PrivateWindowClosed(QObject *window){
-    privateList.removeOne((PrivateChat*) window);
+//    privateList.removeOne((PrivateChat*) window);
 }
 
 void PublicChat::closeEvent(QCloseEvent *event){
@@ -105,7 +105,7 @@ PrivateChat* PublicChat::addPrivateChat(QString username){
     PrivateChat* newPrivateWindow = new PrivateChat(username, 5000, this);
     connect(newPrivateWindow, SIGNAL(windowClosed(QObject*)), this, SLOT(PrivateWindowClosed(QObject*)));
     privateList.append(newPrivateWindow);
-    newPrivateWindow->show();
+//    newPrivateWindow->show();
     return newPrivateWindow;
 }
 
