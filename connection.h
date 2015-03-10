@@ -9,7 +9,7 @@ class Connection : public QObject
 {
     Q_OBJECT
 public:
-    explicit Connection(int refreshRate = 5, QObject *parent = 0);
+    explicit Connection(int refreshRate_msec = 1000, QObject *parent = 0);
     ~Connection();
     bool connectToHost(QString IP, quint16 Port, QString Username);
 
@@ -26,6 +26,8 @@ public slots:
     void checkUserList();
     void disconnected();
     void outgoingPublicMessage(QString messageContent);
+    void outgoingPrivateMessage(QString receiver, QString messageContent);
+    void newPrivateWindow(QObject* privateWindow);
 };
 
 #endif // CONNECTION_H

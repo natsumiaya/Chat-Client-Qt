@@ -32,21 +32,27 @@ void ConnectWindow::ConnectToHost(){
 
     if(IP == "" || port == 0 || name == ""){
         QMessageBox alert;
+        alert.setWindowTitle("Error");
         alert.setText("Please fill out all the field");
         alert.exec();
     }
     else{
         PublicChat* mainWindow = new PublicChat();
         mainWindow->setUsername(name);
-        Connection* theConnection = new Connection(5, mainWindow);
+        Connection* theConnection = new Connection(1000, mainWindow);
         if(!theConnection->connectToHost(IP, port, name)){
             delete mainWindow;
-            delete theConnection;
+//            delete theConnection;
             QMessageBox alert;
-            alert.setText("ERROR: Cannot connect to server");
+            alert.setWindowTitle("Error");
+            alert.setText("ERROR: Cannot connect to server\nConnection timed out");
             alert.exec();
-            return;
         }
-        this->close();
+        else{
+            mainWindow->show();
+            theConnection->checkUserList();
+            connect(mainWindow, SIGNAL(newPrivateWindow(QObject*)), theConnection, SLOT(newPrivateWindow(QObject*)));
+            this->close();
+        }
     }
 }

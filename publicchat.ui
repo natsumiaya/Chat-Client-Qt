@@ -37,16 +37,6 @@
      <string>Send</string>
     </property>
    </widget>
-   <widget class="QListView" name="user_list">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>20</y>
-      <width>111</width>
-      <height>251</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -84,6 +74,16 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="user_list">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>21</y>
+      <width>111</width>
+      <height>251</height>
+     </rect>
     </property>
    </widget>
   </widget>

@@ -1,8 +1,9 @@
 #include "chattextbox.h"
 #include <QKeyEvent>
+#include <QWidget>
 
 ChatTextBox::ChatTextBox(QObject *parent):
-    QTextEdit(parent)
+    QTextEdit((QWidget*)parent)
 {
 
 }
