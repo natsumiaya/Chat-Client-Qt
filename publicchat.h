@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include "privatechat.h"
-
+#include "rc4algorithm.h"
 namespace Ui {
 class PublicChat;
 }
@@ -23,6 +23,7 @@ public:
     QList<PrivateChat*>* getPrivateChatList();
     QStringList* getUserList();
     QString getUsername();
+    RC4Algorithm* getRC4();
 
 private:
     Ui::PublicChat *ui;
@@ -30,7 +31,7 @@ private:
     QString username;
     QList<PrivateChat*> privateList;
     QStringList userList;
-
+    RC4Algorithm *rc4;
 private:
     void closeEvent(QCloseEvent* event);
     void addMessage(QString messageContent);

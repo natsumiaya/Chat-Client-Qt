@@ -3,7 +3,6 @@
 #include <QCloseEvent>
 #include <QColor>
 #include <QFont>
-
 PublicChat::PublicChat(int maxCharacterLength, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::PublicChat)
@@ -17,6 +16,7 @@ PublicChat::PublicChat(int maxCharacterLength, QWidget *parent) :
     connect(ui->send_button, SIGNAL(clicked()), this, SLOT(checkMessage()));
     connect(ui->user_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(createNewPrivateWindow(QListWidgetItem*)));
     maxCharacterMessageLength = maxCharacterLength;
+    rc4 = new RC4Algorithm("test");
 }
 
 PublicChat::~PublicChat()
@@ -122,4 +122,7 @@ void PublicChat::updateUserList(QStringList userList){
 
 QString PublicChat::getUsername(){
     return this->username;
+}
+RC4Algorithm* PublicChat::getRC4(){
+    return this->rc4;
 }

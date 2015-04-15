@@ -3,10 +3,14 @@
 #include "privatechat.h"
 #include <QMessageBox>
 #include <QDebug>
+#include <iostream>
+#include <openssl/pem.h>
+#include <openssl/err.h>
 
 Connection::Connection(int refreshRate_msec, QObject *parent) : QObject(parent)
 {
     timer.setInterval(refreshRate_msec);
+    this->InitRSA();
     connect(&timer, SIGNAL(timeout()), this, SLOT(checkUserList()));
     isApplicationRunning = false;
 }
@@ -28,6 +32,25 @@ bool Connection::connectToHost(QString IP, quint16 Port, QString Username){
         connect(thePublic, SIGNAL(sendMessage(QString)), this, SLOT(outgoingPublicMessage(QString)));
         isApplicationRunning = true;
         socket->write("Mode: Username\r\n" + Username.toUtf8() + "\r\n.\r\n");
+        // Sending Public key to the server
+        size_t pub_len;
+        char* pub_key;
+        BIO* pub = BIO_new(BIO_s_mem());
+        PEM_write_bio_RSAPublicKey(pub, keypair);
+        pub_len = BIO_pending(pub);
+        pub_key = (char*) malloc(pub_len + 1);
+        BIO_read(pub, pub_key, pub_len);
+        pub_key[pub_len] = '\0';
+        char* encrypt = (char*) malloc(4096);
+        int encrypt_len = RSA_public_encrypt(pub_len, (unsigned char*)pub_key, (unsigned char*)encrypt, ServKey, RSA_PKCS1_OAEP_PADDING);
+        encrypt[encrypt_len] = '\0';
+        QString setPub("Mode: SetPubKey\r\n" + QString::fromUtf8(encrypt, encrypt_len) + "\r\n.\r\n");
+        socket->write(setPub.toUtf8());
+        free(encrypt);
+        free(pub_key);
+        BIO_free_all(pub);
+        //
+
         timer.start();
         return true;
     }
@@ -50,7 +73,11 @@ void Connection::disconnected(){
 }
 
 void Connection::outgoingPublicMessage(QString messageContent){
-    QString message("Mode: Public\r\n" + messageContent + "\r\n.\r\n");
+    PublicChat* thePublic = (PublicChat*)parent();
+    RC4Algorithm *rc4 = thePublic->getRC4();
+    QString encryptedContent= rc4->crypt(messageContent);
+    qDebug() << encryptedContent;
+    QString message("Mode: Public\r\n" + encryptedContent + "\r\n.\r\n");
     socket->write(message.toUtf8());
 }
 
@@ -66,7 +93,11 @@ void Connection::incomingMessage(){
             //'User: '/
             QString newString = stringList.at(1);
             newString.remove(0, 6);
-            PublicWindow->addMessage(newString, stringList.at(2));
+            PublicChat* thePublic = (PublicChat*)parent();
+            qDebug() << stringList.at(2);
+            RC4Algorithm *rc4 = thePublic->getRC4();
+            QString mesg = rc4->crypt(stringList.at(2));
+            PublicWindow->addMessage(newString, mesg);
         }
         else if(stringList.at(0) == "Mode: Private"){
             //Check private window
@@ -117,5 +148,19 @@ void Connection::checkUserList(){
 void Connection::newPrivateWindow(QObject *privateWindow){
     //Add signal listener to the new window
     PrivateChat* privateChat = (PrivateChat*)privateWindow;
+    // TODO : Distribute key with another client
     connect(privateChat, SIGNAL(sendMessage(QString,QString)), this, SLOT(outgoingPrivateMessage(QString,QString)));
+}
+
+void Connection::setServerKeyPair(char *key, size_t key_len){
+    BIO* bufio;
+    bufio = BIO_new_mem_buf((void*)key, key_len);
+    PEM_read_bio_RSAPublicKey(bufio, &ServKey, NULL, NULL);
+}
+
+int Connection::InitRSA(){
+    BIGNUM *bne = BN_new();
+    BN_set_word(bne, RSA_F4);
+    int r = RSA_generate_key_ex(keypair, 1024, bne, NULL);
+    return r;
 }
